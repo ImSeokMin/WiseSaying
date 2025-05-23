@@ -24,6 +24,8 @@ public class App {
                 actionWrite();
             } else if (cmd.equals("목록")) {
                 actionList();
+            } else if (cmd.startsWith("삭제")) {
+                actionDelete(cmd);
             }
         }
         scanner.close();
@@ -53,4 +55,15 @@ public class App {
         }
     }
 
+    void actionDelete(String cmd) {
+        String[] cmdParts = cmd.split("\\?id=");
+        
+        int idTODelete = Integer.parseInt(cmdParts[1]);
+        
+        boolean removed = wiseSayings.removeIf(ws-> ws.getId() == idTODelete);
+
+        if(removed) {
+            System.out.printf("%d번 명언이 삭제되었습니다.\n",idTODelete);
+        }
+    }
 }
