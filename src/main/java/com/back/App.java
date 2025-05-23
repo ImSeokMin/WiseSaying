@@ -56,14 +56,35 @@ public class App {
     }
 
     void actionDelete(String cmd) {
-        String[] cmdParts = cmd.split("\\?id=");
-        
-        int idTODelete = Integer.parseInt(cmdParts[1]);
+
+        String[] cmdParts = cmd.split("\\?id=",2);
+
+        if(cmdParts.length < 2) {
+            System.out.println("id를 입력해주세요.");
+            return;
+        }
+
+        if(cmdParts[1] == null) {
+            System.out.println("id 값이 유효하지 않습니다.");
+            return;
+        }
+
+        int idTODelete;
+        try {
+            idTODelete = Integer.parseInt(cmdParts[1]);
+        }
+        catch (NumberFormatException e) {
+            System.out.println("id는 정수로 입력해주세요.");
+            return;
+        }
         
         boolean removed = wiseSayings.removeIf(ws-> ws.getId() == idTODelete);
 
         if(removed) {
             System.out.printf("%d번 명언이 삭제되었습니다.\n",idTODelete);
+        }
+        else {
+            System.out.printf("%d번 명언이 존재하지 않습니다.\n",idTODelete);
         }
     }
 }
