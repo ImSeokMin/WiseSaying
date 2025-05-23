@@ -26,6 +26,8 @@ public class App {
                 actionList();
             } else if (cmd.startsWith("삭제")) {
                 actionDelete(cmd);
+            } else if (cmd.startsWith("수정")) {
+                actionModify(cmd);
             }
         }
         scanner.close();
@@ -57,34 +59,81 @@ public class App {
 
     void actionDelete(String cmd) {
 
-        String[] cmdParts = cmd.split("\\?id=",2);
+        int idToDelete = parseIdCommand(cmd);
 
-        if(cmdParts.length < 2) {
+        if (idToDelete == -1) {
+            return;
+        }
+
+        WiseSaying foundWiseSaying = findWiseSayingById(idToDelete);
+
+        if (foundWiseSaying == null) {
+            System.out.printf("%d번 명언은 존재하지 않습니다.\n", idToDelete);
+            return;
+        }
+
+        wiseSayings.removeIf(ws -> ws.getId() == idToDelete);
+
+        System.out.printf("%d번 명언이 삭제되었습니다.\n", idToDelete);
+    }
+
+    void actionModify(String cmd) {
+
+        int idToModify = parseIdCommand(cmd);
+
+        if (idToModify == -1) {
+            return;
+        }
+
+        WiseSaying foundWiseSaying = findWiseSayingById(idToModify);
+
+        if (foundWiseSaying == null) {
+            System.out.printf("%d번 명언은 존재하지 않습니다.\n", idToModify);
+            return;
+        }
+
+        System.out.printf("명언(기존) : %s\n", foundWiseSaying.getContent());
+        System.out.print("명언 : ");
+        String newContent = scanner.nextLine().trim();
+
+        System.out.printf("작가(기존) : %s\n", foundWiseSaying.getAuthor());
+        System.out.print("작가 : ");
+        String newAuthor = scanner.nextLine().trim();
+
+        foundWiseSaying.setContent(newContent);
+        foundWiseSaying.setAuthor(newAuthor);
+    }
+
+    WiseSaying findWiseSayingById(int id) {
+        for (WiseSaying ws : wiseSayings) {
+            if (ws.getId() == id) {
+                return ws;
+            }
+        }
+        return null;
+    }
+
+    private int parseIdCommand(String cmd) {
+        String[] cmdParts = cmd.split("\\?id=", 2);
+
+        if (cmdParts.length < 2) {
             System.out.println("id를 입력해주세요.");
-            return;
+            return -1;
         }
 
-        if(cmdParts[1] == null) {
+        if (cmdParts[1] == null) {
             System.out.println("id 값이 유효하지 않습니다.");
-            return;
+            return -1;
         }
 
-        int idTODelete;
+        int parsedId;
         try {
-            idTODelete = Integer.parseInt(cmdParts[1]);
-        }
-        catch (NumberFormatException e) {
+            parsedId = Integer.parseInt(cmdParts[1]);
+        } catch (NumberFormatException e) {
             System.out.println("id는 정수로 입력해주세요.");
-            return;
+            return -1;
         }
-        
-        boolean removed = wiseSayings.removeIf(ws-> ws.getId() == idTODelete);
 
-        if(removed) {
-            System.out.printf("%d번 명언이 삭제되었습니다.\n",idTODelete);
-        }
-        else {
-            System.out.printf("%d번 명언이 존재하지 않습니다.\n",idTODelete);
-        }
+        return parsedId;
     }
 }
