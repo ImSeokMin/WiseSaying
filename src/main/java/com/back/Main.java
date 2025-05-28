@@ -19,7 +19,9 @@ public class Main {
                 System.out.print("명언 : ");
                 String wiseSayingContent = scanner.nextLine().trim();
                 System.out.print("작가 : ");
-                String wiseSayingAuthoe = scanner.nextLine().trim();
+                String wiseSayingAuthor = scanner.nextLine().trim();
+
+                System.out.println("1번 명언이 등록되었습니다.");
             }
         }
         scanner.close();
